@@ -11,5 +11,10 @@ namespace eShop.Areas.Admin.ViewModels.Category
 		[MinLength(3, ErrorMessage = "{0} không được ít hơn 3 ký tự")]
 		[DisplayName("Tên danh mục")]
 		public string Name { get; set; }
+
+		internal static object Find(int id)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

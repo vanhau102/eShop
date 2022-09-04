@@ -1,6 +1,7 @@
 ﻿using eShop.Database.Configs;
 using eShop.Database.Entities;
 using Microsoft.EntityFrameworkCore;
+using eShop.Areas.Admin.ViewModels.Category;
 
 namespace eShop.Database
 {
@@ -19,5 +20,7 @@ namespace eShop.Database
 			modelBuilder.ApplyConfiguration(new ProductCategoryConfig());
 			modelBuilder.ApplyConfiguration(new ProductConfig());
 		}
+
+		public DbSet<eShop.Areas.Admin.ViewModels.Category.AddOrUpdateCategoryVM>? AddOrUpdateCategoryVM { get; set; }
 	}
 }
