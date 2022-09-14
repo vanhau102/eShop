@@ -23,6 +23,7 @@
     <Folder Include="Common\" />
     <Folder Include="Database\DataSeeders\" />
     <Folder Include="Common\" />
+    <Folder Include="Database\DataSeeders\" />
   </ItemGroup>
 
 </Project>

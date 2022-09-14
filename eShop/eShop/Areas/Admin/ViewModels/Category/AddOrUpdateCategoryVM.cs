@@ -12,9 +12,6 @@ namespace eShop.Areas.Admin.ViewModels.Category
 		[DisplayName("Tên danh mục")]
 		public string Name { get; set; }
 
-		internal static object Find(int id)
-		{
-			throw new NotImplementedException();
-		}
+		
 	}
 }
