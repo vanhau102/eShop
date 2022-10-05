@@ -2,6 +2,7 @@ using eShop.Database;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using eShop.WebConfigs;
+using eShop.Areas.Admin.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,5 +48,7 @@ app.MapAreaControllerRoute(
 app.MapControllerRoute(
 	name: "default",
 	pattern: "{controller=Home}/{action=Index}/{id?}");
+
+PathHelper.SetWebRootPath(app.Environment.WebRootPath);
 
 app.Run();

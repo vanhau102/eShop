@@ -1,0 +1,14 @@
+﻿@model SelectList
+@{
+	string vModel = ViewBag.vModel as string;
+}
+
+@if (string.IsNullOrEmpty(vModel))
+{
+	<select asp-items="Model" class="form-select"></select>
+}
+else
+{
+	<select asp-items="Model" v-model="@vModel" class="form-select"></select>
+}
+

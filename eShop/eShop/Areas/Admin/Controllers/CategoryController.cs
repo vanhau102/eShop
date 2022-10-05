@@ -5,6 +5,7 @@ using eShop.Database;
 using eShop.Database.Entities;
 using eShop.WebConfigs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 
 namespace eShop.Areas.Admin.Controllers
@@ -15,6 +16,20 @@ namespace eShop.Areas.Admin.Controllers
 		public CategoryController(AppDbContext db, IMapper mapper) : base(db)
 		{
 			_mapper = mapper;
+		}
+
+		public override void OnActionExecuting(ActionExecutingContext context)
+		{
+			var method = context.HttpContext.Request.Method;
+			if (method == HttpMethod.Post.Method)
+			{
+				if (!ModelState.IsValid)
+				{
+					var x = ModelState.Values.Where(x => x.Errors.Where(y => !String.IsNullOrEmpty(y.ErrorMessage)).Count() > 0).ToList();
+					var errorModel = new SerializableError(ModelState);
+					context.Result = new BadRequestObjectResult(errorModel);
+				}
+			}
 		}
 
 		public IActionResult Index()
@@ -31,7 +46,6 @@ namespace eShop.Areas.Admin.Controllers
 			return data;
 		}
 
-		public IActionResult Create() => View();
 
 		[HttpPost]
 		public IActionResult Create([FromBody] AddOrUpdateCategoryVM categoryVM)
@@ -42,12 +56,12 @@ namespace eShop.Areas.Admin.Controllers
 				return Ok(new
 				{
 					success = false,
-					mesg = "Không thể xoá vì danh mục đã được sử dụng"
+					mesg = "Không thể thêm danh mục "
 				});
 			}
 			// Lưu vào db
 			var category = new ProductCategory();
-			//copy data từ category vào category
+			//copy data từ categoryVM vào category
 			_mapper.Map(categoryVM,category);
 			category.CreatedAt = DateTime.Now;
 			category.UpdatedAt = DateTime.Now;
@@ -57,14 +71,6 @@ namespace eShop.Areas.Admin.Controllers
 			{
 				success = true
 			});
-		}
-		public IActionResult Update (int id)
-		{
-			var category = _db.ProductCategories
-				.ProjectTo<AddOrUpdateCategoryVM>(AutoMapperProfile.CategoryConfig)
-				.FirstOrDefault(c => c.Id == id);
-			if (category == null) return RedirectToAction(nameof(Index));
-			return View(category);
 		}
 
 		public IActionResult GetForUpdate(int id)

@@ -47,11 +47,12 @@
 @section Scripts{ 
 	<script>
 
-
+		//Cấu hình notifilecation
+		let opts = {
+			"asyncBlock": 200,
+			"async": 200
+		}
 		let noti = new AWN(); // awesome-notifacation
-
-		
-
 
 		Vue.createApp({
 			data() {
@@ -66,10 +67,13 @@
 				}
 			},
 			methods: {
-				showCreateModal() {
-					// reset data
+				clearData() {
 					this.cateData.id = 0;
 					this.cateData.name = null;
+				},
+				showCreateModal() {
+					// reset data
+					this.clearData();
 					this.action = "Thêm mới ";
 					this.mCreate.show()
 				},
@@ -84,10 +88,11 @@
 							var data = response.data;
 							this.cateData = { ...data };
 							this.mCreate.show();
-							this.action = "Cập nhật "
+							this.action = "Cập nhật ";
 						},
 					);
 				},
+
 
 				addOrUpdate() {
 					if (!this.cateData.name) {
@@ -109,14 +114,22 @@
 							if (data.success) {
 								noti.success(this.action + " danh mục thành công");
 								this.mCreate.hide(); // Ẩn modal
-
-								
-								
 								this.refreshData();
-							} else {
-								noti.warning("Thêm danh mục thất bại !");
 							}
 						},
+						(err) => {
+							console.log(err);
+							let statusCode = err.response.status;
+							if (statusCode == 400) {
+								var errRes = err.response.data;
+								for (let prop in errRes) {
+									for (let mesg of errRes[prop]) {
+										noti.alert(mesg);
+										//return;
+									}
+								}
+							}
+						}
 					);
 				},
 				deleteCategory(id) {
@@ -155,7 +168,6 @@
 						,
 						// Xử lý khi thất bại 
 						(err) => {
-							console.log(err);
 							noti.alert("Tải dữ liệu thất bại ");
 						},
 						// nội dung chờ
@@ -164,7 +176,7 @@
 				}
 			},
 			mounted() {
-				this.mCreate = new bootstrap.Modal("#modalCreate")
+				this.mCreate = new bootstrap.Modal("#modalCreate");
 				this.refreshData();
 			}
 		}).mount("#vueData");
